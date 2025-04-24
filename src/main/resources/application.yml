@@ -1,0 +1,11 @@
+## Spring project information
+spring:
+  application:
+    name: usermanagementtool
+
+## Database configuration
+datasource:
+  databaseType: mongodb://
+  url: localhost
+  port: 27017
+  databaseInstance: management-tool

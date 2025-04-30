@@ -1,0 +1,14 @@
+## Spring project information
+server:
+  port: 8080
+
+grpc:
+  server:
+    port: 9090
+
+## Database configuration
+datasource:
+  databaseType: mongodb://
+  url: localhost
+  port: 27017
+  databaseInstance: management-tool

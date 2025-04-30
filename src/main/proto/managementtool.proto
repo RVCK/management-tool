@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.managementtool";
+option java_outer_classname = "UserProto";
+option objc_class_prefix = "HLW";
+
+package managementtool;
+
+// The User Management Tool service definition
+service UserService {
+  // Management tool Create operation
+  rpc UserCreation (UserRequest) returns (google.protobuf.Empty) {}
+  // Management tool Create operation
+  rpc UserRead (UserFilters) returns (UsersReadResponse) {}
+  // Management tool Create operation
+  rpc UserUpdate (UserRequest) returns (google.protobuf.Empty) {}
+  // Management tool Create operation
+  rpc UserDelete (UserDeleteRequest) returns (google.protobuf.Empty) {}
+}
+
+// The request message containing the whole User information
+message UserRequest {
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string nickname = 4;
+  string password = 5;
+  string email = 6;
+  string country = 7;
+}
+
+// The request message containing different filters to get User information
+message UserFilters {
+  string id = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string nickname = 4;
+  string email = 5;
+  string country = 6;
+}
+
+// The request message to delete an User by ID
+message UserDeleteRequest {
+  string id = 1;
+}
+
+// The response message with the Users read
+message UsersReadResponse {
+  string id = 1;
+  string nickname = 2;
+  string email = 3;
+}

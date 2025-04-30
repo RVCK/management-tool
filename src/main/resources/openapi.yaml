@@ -1,0 +1,266 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: User API management tool
+  description: User API management tool with the CRUD (Create, Read, Update, Delete) operations
+  contact:
+    name: "Manuel M. Romero Lupion"
+    email: "tusy14@gmail.com"
+servers:
+  - url: http://localhost:{port}/management-tool
+    description: Localhost endpoint
+    variables:
+      port:
+        default: "8080"
+tags:
+  - name: Create
+    description: (Crud) This API is used to create the 'User' resource.
+  - name: Read
+    description: (cRud) This API is used to read the 'User' resource.
+  - name: Update
+    description: (crUd) This API is used to update the 'User' resource.
+  - name: Delete
+    description: (cruD) This API is used to delete the 'User' resource.
+
+paths:
+  /users:
+    post:
+      summary: Add new user
+      operationId: userCreation
+      tags:
+        - Create
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '201':
+          description: Successfully created
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      summary: Return a paginated list of Users, allowing for filtering by certain criteria
+      operationId: userSearch
+      tags:
+        - Read
+      parameters:
+        - $ref: '#/components/parameters/userId'
+        - $ref: '#/components/parameters/first_name'
+        - $ref: '#/components/parameters/last_name'
+        - $ref: '#/components/parameters/nickname'
+        - $ref: '#/components/parameters/email'
+        - $ref: '#/components/parameters/country'
+      responses:
+        '200':
+          description: Paginated user list found successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                maxItems: 1000
+                items:
+                  $ref: '#/components/schemas/FilteredUsersResponse'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{id}:
+    patch:
+      summary: Modify an existing User
+      operationId: userUpdate
+      tags:
+        - Update
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: User updated successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      summary: Remove an User
+      operationId: userDeleted
+      tags:
+        - Delete
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User updated successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  parameters:
+    userId:
+      name: id
+      description: User ID (unique identifier)
+      in: query
+      required: false
+      schema:
+        type: string
+      example: "112233"
+    first_name:
+      name: first_name
+      description: User's first name
+      in: query
+      required: false
+      schema:
+        type: string
+      example: "Alice"
+    last_name:
+      name: last_name
+      description: User's last name
+      in: query
+      required: false
+      schema:
+        type: string
+      example: "Bob"
+    nickname:
+      name: nickname
+      description: User's nickname
+      in: query
+      required: false
+      schema:
+        type: string
+      example: "AB123"
+    email:
+      name: email
+      description: User's email
+      in: query
+      required: false
+      schema:
+        type: string
+      example: "alice@bob.com"
+    country:
+      name: country
+      description: User's country
+      in: query
+      required: false
+      schema:
+        type: string
+      example: "UK"
+  schemas:
+    UserRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        nickname:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+        country:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          description: The user creation date
+          example: 2023-01-30T08:30:00Z
+        updated_at:
+          type: string
+          format: date-time
+          description: The user last update date
+          example: 2023-01-30T08:30:00Z
+      required:
+        - id
+        - first_name
+        - last_name
+        - nickname
+        - password
+        - email
+        - country
+    FilteredUsersResponse:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description : Purchase order id
+        created_at:
+          type: string
+          format: date-time
+          description: The user's creation date
+          example: "2023-01-30T08:30:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          description: The user's update date
+          example: "2023-01-30T08:30:00Z"
+    Error:
+      type: object
+      additionalProperties: false
+      properties:
+        code:
+          type: integer
+          format: int32
+          example: 404
+          description: "Error"
+          maximum: 2147483647
+          minimum: 0
+        title:
+          type: string
+          example: "RESOURCE_NOT_FOUND_EXCEPTION"
+          description: "Http status of the request."
+        detail:
+          type: string
+          description: error message
+          example: Requested entity does not exists
+          maxLength: 1000
+      required:
+        - code
+        - title
+        - detail
